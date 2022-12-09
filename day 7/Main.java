@@ -7,7 +7,7 @@ public class Main{
 
     public Main() throws Exception{
         // BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        BufferedReader reader = new BufferedReader(new FileReader("test.txt"));
+        BufferedReader reader = new BufferedReader(new FileReader("input.txt"));
 
         // Read root dir
         String line = reader.readLine();
@@ -61,21 +61,19 @@ public class Main{
             }
         }
 
-        int required = 70_000_000 - tot;
+        int required = 30_000_000 - (70_000_000 - tot);
 
-        /* write function that checks and returns smallest 
+        /* 
+         * write function that checks and returns smallest 
          * sub directory where size >= required
          */
-        System.out.println(part1);
-        System.out.println(tot);
-        System.out.println(required);
-        reader.close();
-    }
+        Dir deletDir = current.getSmallestSubDir(required, current);
 
-    private int getSizes(Dir d){
-        ArrayList<Integer> sizes = new ArrayList<>();
-        
-        return 0;
+        System.out.println("part1 = "+part1);
+        System.out.println("total size = " + tot);
+        System.out.println("Requierd = " + required);
+        System.out.println(deletDir.name + " " + deletDir.getDirSize());
+        reader.close();
     }
 
     public static void main(String[] args) throws Exception{

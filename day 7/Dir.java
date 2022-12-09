@@ -51,4 +51,18 @@ public class Dir {
         }
         return sizes;
     }
+
+    public Dir getSmallestSubDir(int required, Dir d){
+        Dir returnDir = d;
+        int dirSize = this.getDirSize();
+        int subDirSize;
+        for(Dir subDir : this.subDirs){
+            Dir tmp = subDir.getSmallestSubDir(required, subDir);
+            subDirSize = tmp.getDirSize();
+            if((subDirSize >= required) && (subDirSize < returnDir.getDirSize())){
+                returnDir = tmp;
+            }
+        }
+        return returnDir;
+    }
 }
