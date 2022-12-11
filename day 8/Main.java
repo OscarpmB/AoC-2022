@@ -1,7 +1,5 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Main {
@@ -18,10 +16,53 @@ public class Main {
         return (c == 0) || (c == trees[0].length-1) ? true : false;
     }
 
-    public int findTreesDumb(int[][] trees){
-        int visable = 0;
-        return 0;
+    public int findViewScore(int[][] trees){
+        int maxScore = 0;
+        for(int r = 0; r < trees.length; r++){
+            for(int c =0 ; c < trees[r].length; c++){
+                int tmp = getScore(trees, r, c);
+                maxScore = (tmp > maxScore) ? tmp  : maxScore;
+            }
+        }
+        return maxScore;
     }
+
+    public int getScore(int[][] trees, int r, int c){
+        int treeHight = trees[r][c];
+        int score = 0;
+        int[] x = {0, 0, 0, 0};
+        // find top:
+        for(int i = r-1; i >= 0 ; i--){
+            x[0]++;
+            if(treeHight <= trees[i][c]){
+                break;
+            }
+        }
+        // find bottom
+        for(int i = r+1; i < trees.length ; i++){
+            x[1]++;
+            if(treeHight <= trees[i][c]){
+                break;
+            }
+        }
+        // find left
+        for(int i = c-1; i >= 0 ; i--){
+            x[2]++;
+            if(treeHight <= trees[r][i]){
+                break;
+            }
+        }
+        for(int i = c+1; i < trees[r].length ; i++){
+            x[3]++;
+            if(treeHight <= trees[r][i]){
+                break;
+            }
+        }
+        score = x[0]*x[1]*x[2]*x[3];
+        return score;
+    } 
+
+  
 
     public int findTrees(int[][] trees){
         int visable = 0;
@@ -97,8 +138,9 @@ public class Main {
             }
             r++;
         }
-        // print(trees);
+        print(trees);
         System.out.println(findTrees(trees));
+        System.out.println(findViewScore(trees));
 
     }
     public static void main(String[] args) throws Exception {
