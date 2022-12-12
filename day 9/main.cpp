@@ -88,7 +88,7 @@ void updateTail(End head, End &tail){
 int main(int argc, char const *argv[])
 {
     string line;
-    ifstream in("input.txt");
+    ifstream in("test.txt");
     End head;
     End tail;
     while(getline(in, line)){
