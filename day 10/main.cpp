@@ -11,16 +11,39 @@ struct reg
     int cycle;
 };
 
+void draw_sprite(reg &x){
+    int mid = x.val;
+    int crt = (x.cycle -1);
+    char c;
+    if(crt % 40 == 0 && crt != 0){
+        cout << "\n";
+    }
+    switch (abs(mid-(crt%40))%40)    
+    {
+    case -1:
+        c = '#';
+        break;
+    case 0:
+        c = '#';
+        break;
+    case 1:
+        c = '#';
+        break;
+    default:
+        c = '.';
+        break;
+    }
+    cout << c;
+}
+
 void check_signal(int &sum, reg &x){
+    draw_sprite(x);
     if((x.cycle == 20) || (x.cycle == 60) || (x.cycle == 100) || (x.cycle == 140) || (x.cycle == 180) || (x.cycle == 220)){
         sum = sum + x.val*x.cycle;
     }
 }
 
-void handle_addx(int n, reg &x){
 
-
-}
 
 
 
