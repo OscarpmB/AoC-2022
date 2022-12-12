@@ -19,9 +19,9 @@ class End {
             this->x = this->x + dx;
             this->y = this->y + dy;
             pair<int,int> tmp(this->x,this->y);
-            if(find(this->visited.begin(), this->visited.end(), tmp) == this->visited.end()){
+            // if(find(this->visited.begin(), this->visited.end(), tmp) == this->visited.end()){
                 this->visited.push_back(tmp);
-            }
+            // }
         }
         void print_visited(){
             for(int i = 0; i < this->visited.size(); ++i){
@@ -99,6 +99,7 @@ int main(int argc, char const *argv[])
             updateTail(head, tail);
             /* Todo fix so ut jumps diagonaly when needed*/
         }
+        // cout << line << endl;
     }
     int k = tail.visited.size();
     tail.print_visited();
