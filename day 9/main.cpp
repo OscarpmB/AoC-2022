@@ -12,6 +12,7 @@ class End {
         End(){
             this->x = 0;
             this->y = 0;
+            update_pos(0,0);
         }
         
         void update_pos(int dx, int dy){
@@ -22,13 +23,12 @@ class End {
                 this->visited.push_back(tmp);
             }
         }
-        // int visited_positions(){
-        //     int i = 0;
-        //     for(auto it = this->visited.begin(); it < this->visited.end(); ++it){
-        //         i = i +1;
-        //     }
-        //     return i;
-        // }
+        void print_visited(){
+            for(int i = 0; i < this->visited.size(); ++i){
+                cout << "(" << this->visited[i].first << "," << this->visited[i].second << ") "; 
+            }
+            cout << "\n";
+        }
 };
 
 void updateHead(string cmd, End &head){
@@ -46,30 +46,49 @@ void updateHead(string cmd, End &head){
 void updateTail(End head, End &tail){
     int dx = head.x - tail.x;
     int dy = head.y - tail.y;
-    switch(dx){
+    // check for diagonal move
+    int diagonal = dx*dy; // zero only if tail is on same vertical or horizontal line
+    if(diagonal && (abs(dx) >1 || abs(dy) > 1)){
+        /* diagonal > 0 -> head is in first or third quadrant of tail */
+        if(diagonal > 0){
+            if((dx > 0) && (dy>0)){
+                tail.update_pos(1,1);
+            }else{
+                tail.update_pos(-1,-1);
+            }
+        }else{
+            if((dx>0)&&(dy<0)){
+                tail.update_pos(1,-1);
+            }else if((dx<0)&&(dy>0)){
+                tail.update_pos(-1,1);
+            }
+        }
+    }else{
+        switch(dx){
         case 2:
             tail.update_pos(1,0);
             break;
         case -2:
             tail.update_pos(-1,0);
             break;
-    }
-    switch (dy)
-    {
-    case 2:
-        tail.update_pos(0,1);
-        break;
-    
-    case -2:
-        tail.update_pos(0,-1);
-        break;
+         }
+        switch (dy)
+        {
+        case 2:
+            tail.update_pos(0,1);
+            break;
+        
+        case -2:
+            tail.update_pos(0,-1);
+            break;
+        }
     }
 }
 
 int main(int argc, char const *argv[])
 {
     string line;
-    ifstream in("test.txt");
+    ifstream in("input.txt");
     End head;
     End tail;
     while(getline(in, line)){
@@ -82,6 +101,7 @@ int main(int argc, char const *argv[])
         }
     }
     int k = tail.visited.size();
+    tail.print_visited();
     cout << k << endl;
     return 0;
 }
