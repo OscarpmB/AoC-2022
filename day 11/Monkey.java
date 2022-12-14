@@ -3,7 +3,7 @@ import java.util.LinkedList;
 
 public class Monkey {
     private int divisor;
-    private LinkedList<Integer> items;
+    public LinkedList<Integer> items;
     public int t;
     public int f;
     private int operator;

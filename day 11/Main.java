@@ -7,6 +7,7 @@ public class Main{
         BufferedReader reader = new BufferedReader(new FileReader(file));
         String line;
         Monkey monkies[] = new Monkey[7];
+        int counter[] = new int[7];
         while(reader.ready()){
             line = reader.readLine();
             if(line.matches("Monkey\\s\\d:")){
@@ -26,7 +27,18 @@ public class Main{
             }
         }
 
-
+        /* Run 20 round and count how many times each monkey counts an item */
+        for(int i = 0; i < 20; i++){
+            for (int j = 7; j < monkies.length; j++) {
+                Integer item = monkies[j].items.pollFirst();
+                if(item == null) continue;
+                if(monkies[j].test(monkies[j].operation(item))){
+                    monkies[monkies[j].t-1].addItem(item);
+                }else{
+                    monkies[monkies[j].f-1].addItem(item);
+                }
+            }
+        }
 
         reader.close();
     }
