@@ -1,10 +1,8 @@
-import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class Monkey {
 
-    private long divisor;
+    private Long divisor;
     public LinkedList<Long> items;
     public int t;
     public int f;
@@ -13,7 +11,7 @@ public class Monkey {
     private String operand2;
 
 
-    public Monkey(int tr, int fa, String[] op, long d) {
+    public Monkey(int tr, int fa, String[] op, Long d) {
         this.divisor = d;
         this.items = new LinkedList<>();
         this.f = fa;
@@ -23,9 +21,9 @@ public class Monkey {
         this.operand2 = op[op.length-1];
     }
 
-    public long operation(long i){
+    public Long operation(Long i){
 
-        long old;
+        Long old;
         if(this.operand2.equals("old")){
             old = i;
         }else{
@@ -37,15 +35,15 @@ public class Monkey {
             case "*":
                 return i*old;
         }
-        return 0;
+        return 0L;
     }
 
-    public void addItem(long i){
+    public void addItem(Long i){
         this.items.add(i);
     }
 
-    public boolean test(long a){
-        return (a % this.divisor) == 0 ? true : false;
+    public boolean test(Long a){
+        return (a % (Long) this.divisor) == 0 ? true : false;
     }
 }
 

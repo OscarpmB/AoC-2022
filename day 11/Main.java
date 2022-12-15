@@ -4,7 +4,7 @@ import java.math.BigInteger;
 
 public class Main{
     public Main()throws Exception{
-        String file = "test.txt";
+        String file = "input.txt";
         BufferedReader reader = new BufferedReader(new FileReader(file));
         String line;
         Monkey monkies[] = new Monkey[8];
@@ -19,7 +19,7 @@ public class Main{
                 String a[] = reader.readLine().split(" ");
                 String[] ops = a;
                 // items = reader.readLine().split(" ");
-                int dividor = Integer.parseInt(reader.readLine().split(" ")[5]);
+                Long dividor = Long.parseLong(reader.readLine().split(" ")[5]);
                 // items = reader.readLine().split(" ");
                 int t = Integer.parseInt(reader.readLine().split(" ")[9]);
                 // items = reader.readLine().split(" ");
@@ -49,7 +49,7 @@ public class Main{
                 int inspections = 0;
                 for (Long item : monkies[j].items) {
                     if(item == null) continue;
-                    long modified = monkies[j].operation(item);
+                    Long modified = monkies[j].operation(item);
                     if(monkies[j].test(modified)){
                         monkies[monkies[j].t].addItem(modified);
                     }else{
