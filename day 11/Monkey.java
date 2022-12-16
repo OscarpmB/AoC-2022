@@ -2,7 +2,7 @@ import java.util.LinkedList;
 
 public class Monkey {
 
-    private Long divisor;
+    public long divisor;
     public LinkedList<Long> items;
     public int t;
     public int f;
@@ -11,7 +11,7 @@ public class Monkey {
     private String operand2;
 
 
-    public Monkey(int tr, int fa, String[] op, Long d) {
+    public Monkey(int tr, int fa, String[] op, long d) {
         this.divisor = d;
         this.items = new LinkedList<>();
         this.f = fa;
@@ -21,9 +21,10 @@ public class Monkey {
         this.operand2 = op[op.length-1];
     }
 
-    public Long operation(Long i){
+    public long operation(long i){
 
-        Long old;
+        long old;
+        long newWorry = 0;
         if(this.operand2.equals("old")){
             old = i;
         }else{
@@ -35,15 +36,15 @@ public class Monkey {
             case "*":
                 return i*old;
         }
-        return 0L;
+        return newWorry;
     }
 
-    public void addItem(Long i){
+    public void addItem(long i){
         this.items.add(i);
     }
 
-    public boolean test(Long a){
-        return (a % (Long) this.divisor) == 0 ? true : false;
+    public boolean test(long a){
+        return (a % (long) this.divisor) == 0 ? true : false;
     }
 }
 

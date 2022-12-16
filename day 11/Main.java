@@ -2,6 +2,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.math.BigInteger;
 
+import javax.management.monitor.Monitor;
+
 public class Main{
     public Main()throws Exception{
         String file = "input.txt";
@@ -19,7 +21,7 @@ public class Main{
                 String a[] = reader.readLine().split(" ");
                 String[] ops = a;
                 // items = reader.readLine().split(" ");
-                Long dividor = Long.parseLong(reader.readLine().split(" ")[5]);
+                int dividor = Integer.parseInt(reader.readLine().split(" ")[5]);
                 // items = reader.readLine().split(" ");
                 int t = Integer.parseInt(reader.readLine().split(" ")[9]);
                 // items = reader.readLine().split(" ");
@@ -37,23 +39,28 @@ public class Main{
 
         int bound = monkies[4] == null ? 4 : 8;
 
+        long mod = 1L;
+        for(int i = 0; i < bound; i++){
+            mod = mod * monkies[i].divisor;
+        }
+        System.out.println("mod= " + mod);
         for(int i = 0; i < 10_000; i++){
-            if(i==1 || i ==20 || (i % 1000) == 0){
-                System.out.println("After round " + i);
-                for (int j = 0; j < bound; j++) {
-                    System.out.println("Moneky" + j + " " + counter[j] );
-                }
-            }
+            // if(i==1 || i ==20 || (i % 1000) == 0){
+            //     System.out.println("After round " + i);
+            //     for (int j = 0; j < bound; j++) {
+            //         System.out.println("Moneky" + j + " " + counter[j] );
+            //     }
+            // }
             for (int j = 0; j < bound; j++) {
                 // System.out.println("j= " + j);
                 int inspections = 0;
                 for (Long item : monkies[j].items) {
                     if(item == null) continue;
-                    Long modified = monkies[j].operation(item);
+                    long modified = monkies[j].operation(item);
                     if(monkies[j].test(modified)){
-                        monkies[monkies[j].t].addItem(modified);
+                        monkies[monkies[j].t].addItem(modified % mod);
                     }else{
-                        monkies[monkies[j].f].addItem(modified);
+                        monkies[monkies[j].f].addItem(modified % mod);
                     }
                     counter[j]++;
                     inspections++;
@@ -64,10 +71,6 @@ public class Main{
                 
             }
         }
-        // for (int i : counter) {
-        //     System.out.println(i);
-        // }
-
         // find the two larges values
         int max1 = 0;
         int max2 = 0;
