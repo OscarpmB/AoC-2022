@@ -15,105 +15,51 @@ public class Main{
         }
     }
 
-    /*
-     * @return array which symbolises edges, element is node number of -1 if no edge
-     */
+    public void printAdjL(ArrayList<Integer>[] adjL){
+        for(int i = 0; i < adjL.length; i++){
+            System.out.print(i+ ": ");
+            ArrayList<Integer> edged = adjL[i];
+            for (int j = 0; j < edged.size(); j++) {
+                System.out.print(edged.get(j) + ", ");
+            }
+            System.out.println();
+        }
+    }
     private int[] findEdges(int r, int c, char[][] map, int node){
         int[] edges = {-1,-1,-1,-1};
-        // Check left right and down. Take care of edge cases
-        if(r==0){
-            int down = Math.abs(map[r+1][c] - map[r][c]);
-            if(down == 1 || down == 0){
-                edges[0] = node + map[r].length;
-            }
-            if(c == 0){// check right
-                int right = Math.abs(map[r][c+1] - map[r][c]);
-                if(right == 1 || right == 0){
-                    edges[1] = node + 1;
-                }
-            }else if(c == map[r].length-1){ // and left
-                int left = Math.abs(map[r][c-1] - map[r][c]);
-                if(left == 1 || left == 0){
-                    edges[1] = node - 1;
-                }
-            }else{ // check left and right
-                int right = Math.abs(map[r][c+1] - map[r][c]);
-                if(right == 1 || right == 0){
-                    edges[1] = node + 1;
-                }
-                int left = Math.abs(map[r][c-1] - map[r][c]);
-                if(left == 1 || left == 0){
-                    edges[2] = node -1;
-                }
-            }
-        }else if(r == map[r].length-1){ // Check left up and right
-            int up = Math.abs(map[r-1][c] - map[r][c]);
-            if(up == 1 || up == 0){
+        boolean up = r==0 ? false : true;
+        boolean down = r == map.length-1 ? false : true;
+        boolean left = c == 0 ? false : true;
+        boolean right = c == map[r].length -1 ? false : true;
+        if(up){
+            int du = Math.abs(map[r-1][c] - map[r][c]);
+            if(du == 1 || du == 0){
                 edges[0] = node - map[r].length;
-            }
-            if(c == 0){// check right
-                int right = Math.abs(map[r][c+1] - map[r][c]);
-                if(right == 1 || right == 0){
-                    edges[1] = node +1;
-                }
-            }else if(c == map[r].length-1){ // and left
-                int left = Math.abs(map[r][c-1] - map[r][c]);
-                if(left == 1 || left == 0){
-                    edges[1] = node - 1;
-                }
-            }else{ // check left and right
-                int right = Math.abs(map[r][c+1] - map[r][c]);
-                if(right == 1 || right == 0){
-                    edges[1] = node + 1;
-                }
-                int left = Math.abs(map[r][c-1] - map[r][c]);
-                if(left == 1 || left == 0){
-                    edges[2] = node - 1;
-                }
-            }
-        }else{ 
-            // Add up and down but validate öeft and right seperate
-            int up = Math.abs(map[r-1][c] - map[r][c]);
-            if(up == 1 || up == 0){
-                edges[0] = node - map[r].length;
-            }
-            int down = Math.abs(map[r+1][c] - map[r][c]);
-            if(down == 1 || down == 0){
-                edges[1] = node + map[r].length;
-            }
-            // Check if left or right needs to be handled seperate
-            if(c==0 || c == map[r].length-1){
-                int x = c == 0 ? -1 : 1;
-                switch(x){
-                    case -1:
-                    int right = Math.abs(map[r][c+1] - map[r][c]);
-                    if(right == 1 || right == 0){
-                        edges[3] = node+1;
-                    }
-                    break;
-                    default:
-                    int left = Math.abs(map[r][c-1] - map[r][c]);
-                    if(left == 1 || left == 0){
-                        edges[2] = node-1;
-                    }
-                }
-            }else{
-                // Check left, right, up and down
-                int left = Math.abs(map[r][c-1] - map[r][c]);
-                int right = Math.abs(map[r][c+1] - map[r][c]);
-                /*
-                * Added edges if hight difference is 1 or zero
-                */
-                if(left == 1 || left == 0){
-                    edges[2] = node-1;
-                }
-                if(right == 1 || right == 0){
-                    edges[3] = node+1;
-                }
             }
         }
+        if(down){
+            int dd = Math.abs(map[r+1][c] - map[r][c]);
+            if(dd == 1 || dd == 0){
+                edges[1] = node + map[r].length;
+            }
+        }
+        if(left){
+            int dl = Math.abs(map[r][c-1] - map[r][c]);
+            if(dl == 1 || dl == 0){
+                edges[2] = node -1;
+            }
+        }
+        if(right){
+            int dr = Math.abs(map[r][c+1]-map[r][c]);
+            if(dr == 1 || dr == 0){
+                edges[3] = node + 1;
+            }
+        }
+
+
         return edges;
     }
+    
 
     public Main()throws Exception{
         String file = "test.txt";
@@ -173,14 +119,20 @@ public class Main{
                 for(int u: edges){
                     if(u != -1){ // edge exits
                         // System.out.println("r=" + r + " c= " +c);
-                        adjL[v].add(u);
-                        adjL[u].add(v);
+                        if(!adjL[v].contains(u)){
+                            adjL[v].add(u);
+                        }
+                        if(!adjL[u].contains(v)){
+                            adjL[u].add(v);
+                        }
                     }
                 }
                 v++;
             }
         }
-        
+
+        printAdjL(adjL);
+
         System.out.println("E=" + e +" S=" + s);
         
         reader.close();
