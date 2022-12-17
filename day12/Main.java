@@ -124,10 +124,14 @@ public class Main{
         int row = 0;
         int s = -1;
         int e = -1;
+        ArrayList<Integer> starts = new ArrayList<>();
         while(reader.ready()){
             line = reader.readLine();
             for(int col = 0; col < line.length(); col++){
                 this.map[row][col] = line.charAt(col);
+                if(line.charAt(col) == 'a'){
+                    starts.add(line.length()*row + col);
+                }
                 if(line.charAt(col) == 'S'){
                     s = line.length()*row + col;
                     this.map[row][col] = 'a';
@@ -180,6 +184,17 @@ public class Main{
         int part1 = BFS(adjL, s, e);
         printMap();
         System.out.println(part1);
+
+        // Part 2, find overall shortest path
+        int part2 = Integer.MAX_VALUE;
+        for(int start : starts){
+            int tmp = BFS(adjL, start, e);
+            if(tmp < part2 && tmp > 0){
+                part2 = tmp;
+            }
+        }
+        
+        System.out.println("Part2= " + part2);
         reader.close();
     }
 
