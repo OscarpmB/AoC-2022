@@ -2,14 +2,16 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class Main{
-    private int rowLength;
 
-    public void printMap(char[][] map){
-        for (int row = 0; row < map.length; row++) {
-            for (int c = 0; c < map[row].length; c++) {
-                System.out.print(map[row][c]);
+    public char[][] map;
+    public void printMap(){
+        for (int row = 0; row < this.map.length; row++) {
+            for (int c = 0; c < this.map[row].length; c++) {
+                System.out.print(this.map[row][c]);
             }
             System.out.print("\n");
         }
@@ -55,14 +57,57 @@ public class Main{
                 edges[3] = node + 1;
             }
         }
-
-
         return edges;
+    }
+    public void updateMap(int node){
+        int c = node % this.map[0].length;
+        int r = -1;
+        int bound = 0;
+        int low= 0;
+        int high = this.map[0].length;
+        while(bound < this.map.length){
+            if(low <= node && node < high){
+                r = bound;
+                break;
+            }
+            low = high;
+            high += this.map[0].length;
+            bound++;
+        }
+        this.map[r][c] = '.';
+    }
+
+    public int BFS(ArrayList<Integer>[] adjL, int s, int e){
+        // Array for distances
+        int[] distances = new int[adjL.length];
+        for(int i = 0; i < distances.length; i++){
+            distances[i] = Integer.MIN_VALUE;
+        }
+        Queue<Integer> q = new LinkedList<>();
+        distances[s] = 0;
+        q.add(s);
+        boolean eFound = false;
+        // do BFS until e is found and note distance from s
+        while(q.size() > 0 && !eFound){
+            int u = q.poll();
+            for(int v : adjL[u]){
+                if(distances[v] == Integer.MIN_VALUE){
+                    distances[v] = distances[u] + 1;
+                    q.add(v);
+                    updateMap(v);
+                }
+                if(v == e){
+                    eFound = true;
+                    break;
+                }
+            }
+        }
+        return distances[e];
     }
     
 
     public Main()throws Exception{
-        String file = "test.txt";
+        String file = "input.txt";
         FileInputStream fIn = new FileInputStream(file);
         BufferedReader reader = new BufferedReader(new InputStreamReader(fIn));
         String line;
@@ -74,7 +119,7 @@ public class Main{
         }
         fIn.getChannel().position(0);
         reader = new BufferedReader(new InputStreamReader(fIn));
-        char[][] map = new char[rows][cols];
+        this.map = new char[rows][cols];
         // extract the map inorder to construct graph
         int row = 0;
         int s = -1;
@@ -82,24 +127,20 @@ public class Main{
         while(reader.ready()){
             line = reader.readLine();
             for(int col = 0; col < line.length(); col++){
-                map[row][col] = line.charAt(col);
+                this.map[row][col] = line.charAt(col);
                 if(line.charAt(col) == 'S'){
                     s = line.length()*row + col;
-                    map[row][col] = 'a';
+                    this.map[row][col] = 'a';
                 }
                 if(line.charAt(col) == 'E'){
-
                     e = line.length()*row + col;
-                    map[row][col] = 'z';
-
+                    this.map[row][col] = 'z';
                 }
-
-
             }
             row++;
         }
-        printMap(map);
-        /* Construct graph from map.
+        // printthis.Map(this.map);
+        /* Construct graph from this.map.
          * Use an adjecency list representation.
          * edge from u to v if the level difference is okay 
          * 
@@ -110,11 +151,11 @@ public class Main{
         for(int i = 0; i < adjL.length; i++){
             adjL[i] = new ArrayList<>();
         }
-        // Start adding edges, first node is top left on map, second node is map[0][1], 3:d node is map[0][2] ...
+        // Start adding edges, first node is top left on this.map, second node is this.map[0][1], 3:d node is this.map[0][2] ...
         int v = 0; // vertex number corresponds to adjL index;
-        for(int r = 0; r < map.length; r++){
-            for (int c = 0; c < map[r].length; c++) {
-                int[] edges = findEdges(r,c,map,v);
+        for(int r = 0; r < this.map.length; r++){
+            for (int c = 0; c < this.map[r].length; c++) {
+                int[] edges = findEdges(r,c,this.map,v);
                 /* add all found edges both ways */
                 for(int u: edges){
                     if(u != -1){ // edge exits
@@ -131,10 +172,14 @@ public class Main{
             }
         }
 
-        printAdjL(adjL);
+        // printAdjL(adjL);
 
         System.out.println("E=" + e +" S=" + s);
+
         
+        int part1 = BFS(adjL, s, e);
+        printMap();
+        System.out.println(part1);
         reader.close();
     }
 
