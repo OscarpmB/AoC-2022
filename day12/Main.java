@@ -34,26 +34,26 @@ public class Main{
         boolean left = c == 0 ? false : true;
         boolean right = c == map[r].length -1 ? false : true;
         if(up){
-            int du = Math.abs(map[r-1][c] - map[r][c]);
-            if(du == 1 || du == 0){
+            int du = map[r-1][c] - map[r][c];
+            if( du < 2){
                 edges[0] = node - map[r].length;
             }
         }
         if(down){
-            int dd = Math.abs(map[r+1][c] - map[r][c]);
-            if(dd == 1 || dd == 0){
+            int dd = map[r+1][c] - map[r][c];
+            if(dd < 2){
                 edges[1] = node + map[r].length;
             }
         }
         if(left){
-            int dl = Math.abs(map[r][c-1] - map[r][c]);
-            if(dl == 1 || dl == 0){
+            int dl = map[r][c-1] - map[r][c];
+            if(dl < 2){
                 edges[2] = node -1;
             }
         }
         if(right){
-            int dr = Math.abs(map[r][c+1]-map[r][c]);
-            if(dr == 1 || dr == 0){
+            int dr = map[r][c+1]-map[r][c];
+            if(dr <2){
                 edges[3] = node + 1;
             }
         }
@@ -163,9 +163,9 @@ public class Main{
                         if(!adjL[v].contains(u)){
                             adjL[v].add(u);
                         }
-                        if(!adjL[u].contains(v)){
-                            adjL[u].add(v);
-                        }
+                        // if(!adjL[u].contains(v)){
+                        //     adjL[u].add(v);
+                        // }
                     }
                 }
                 v++;
