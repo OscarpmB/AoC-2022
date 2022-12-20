@@ -27,11 +27,21 @@ public class Main{
 
     
     public boolean validate(String left, String right){
-        if((left.isEmpty() && !right.isEmpty()) || left.isEmpty() && right.isEmpty()){
+        if(left.isEmpty() || (left.equals("]") || right.equals("]"))){ // end of string reached with out fail. return ture
             return true;
         }
-        char lc = left.charAt(0) == ',' ? left.charAt(1): left.charAt(0);
-        char rc = right.charAt(0) == ',' ? right.charAt(1): right.charAt(0);
+        if(left.length()>1 && right.length() < 2){ // Right ran out before left
+            return false;
+        }
+
+        if(left.charAt(0)== ','){
+            left = left.substring(1);
+        }
+        if(right.charAt(0)== ','){
+            right = right.substring(1);
+        }
+        char lc = left.charAt(0);
+        char rc = right.charAt(0);
         String newLeft = null;
         String newRight = null;
 
@@ -60,15 +70,17 @@ public class Main{
             if(Character.isDigit(rc) && !Character.isDigit(lc)){
                 int leftStop = getSublists(left);
                 String tempLeft = left.substring(0, leftStop+1);
-                if(!validate(tempLeft, "["+rc+"]")){
+                String tempRight = "["+rc+"]";
+                if(!validate(tempLeft, tempRight)){
                     return false;
                 }
                 newLeft = left.substring(leftStop+1);
                 newRight = right.substring(1);
             }else if(!Character.isDigit(rc) && Character.isDigit(lc)){
                 int rightStop = getSublists(right);
-                String tempRight = left.substring(0, rightStop+1);
-                if(!validate("["+lc+"]", tempRight)){
+                String tempRight = right.substring(0, rightStop+1);
+                String tempLeft = "["+lc+"]";
+                if(!validate(tempLeft, tempRight)){
                     return false;
                 }
                 newLeft = left.substring(1);
