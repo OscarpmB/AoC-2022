@@ -3,113 +3,179 @@ import java.io.FileReader;
 
 public class Main{
 
-
-
-    public Main() throws Exception{
-        String file = "test.txt";
+    public void part1() throws Exception{
+        String file = "input.txt";
         BufferedReader reader = new BufferedReader(new FileReader(file));
 
         int c = 0;
+        int pair= 1;
+        int sum = 0;
         while(reader.ready()){
             String left = reader.readLine();
             String right = reader.readLine();
 
             if(validate(left, right)){
                 c++;
+                sum += pair;
             }
+            pair++;
             reader.readLine();
 
         }
-
-
-
+        System.out.println(sum);
     }
 
-    
-    public boolean validate(String left, String right){
-        if(left.isEmpty() || (left.equals("]") || right.equals("]"))){ // end of string reached with out fail. return ture
-            return true;
-        }
-        if(left.length()>1 && right.length() < 2){ // Right ran out before left
-            return false;
-        }
-
-        if(left.charAt(0)== ','){
-            left = left.substring(1);
-        }
-        if(right.charAt(0)== ','){
-            right = right.substring(1);
-        }
-        char lc = left.charAt(0);
-        char rc = right.charAt(0);
-        String newLeft = null;
-        String newRight = null;
-
-        // check if two integers
-        if(Character.isDigit(lc) && Character.isDigit(rc)){
-            if( lc > rc){ // validate that 
-                return false;
-            }else{
-                newLeft = left.substring(2);
-                newRight = right.substring(2);
-                // return validate(newLeft, newRight);
-            }
-        }else if(rc == '[' && lc == '['){
-            /* sublist found. find soub string that represents list and validatde */
-            int rightStop = getSublists(right);
-            int leftStop = getSublists(left);
-            String tempLeft = left.substring(1, leftStop+1);
-            String tempRight = right.substring(1, rightStop+1);
-            if(!validate(tempLeft, tempRight)){
-                return false;
-            }
-            newLeft = left.substring(leftStop+1);
-            newRight = right.substring(rightStop+1);
-        }else{ // left and right are of different sort
-            // Find which is list and which is digit
-            if(Character.isDigit(rc) && !Character.isDigit(lc)){
-                int leftStop = getSublists(left);
-                String tempLeft = left.substring(0, leftStop+1);
-                String tempRight = "["+rc+"]";
-                if(!validate(tempLeft, tempRight)){
-                    return false;
-                }
-                newLeft = left.substring(leftStop+1);
-                newRight = right.substring(1);
-            }else if(!Character.isDigit(rc) && Character.isDigit(lc)){
-                int rightStop = getSublists(right);
-                String tempRight = right.substring(0, rightStop+1);
-                String tempLeft = "["+lc+"]";
-                if(!validate(tempLeft, tempRight)){
-                    return false;
-                }
-                newLeft = left.substring(1);
-                newRight = right.substring(rightStop+1);
-            }
-
-        }
-        
-        return validate(newLeft, newRight);
+    public Main() throws Exception{
+        part1();
     }
-
-    public int getSublists(String seq){
-        int ret = -1;
+    /*
+     * @left is string representation of list [e,e,[...],...]
+     */
+    public int noOfElements(String list){
+        int elements = 0;
+        String elem = getElem(list);
         int opened = 0;
-        for(int i = 0; i < seq.length(); i++){
-            if(seq.charAt(i) == '['){
-                opened++;
-            }
-            if(seq.charAt(i) == ']'){
-                if(opened == 1){
-                    ret = i;
+        while (elem != null){
+            elements++;
+            list = updateList(list, elem);
+            elem = getElem(list);
+        }
+        // for (int i = 0; i < list.length(); i++) {
+        //     if(opened == 0 && i != 0){
+        //         break;
+        //     }
+        //     if(list.charAt(i) == '['){
+        //         opened++;
+        //     }else if(list.charAt(i) == ']'){
+        //         opened--;
+        //     }else if(list.charAt(i) == ','){
+        //         continue;
+        //     }else if(opened == 1 && list.charAt(i) == ','){
+        //         elements++;
+        //     }
+            
+        // }
+        return elements;
+    }
+
+    public String getElem(String list){
+        String elem = (list.length() > 2) ? list.substring(1, list.length()-1) : null;
+        int openedBrckets = 0;
+        if(Character.isDigit(list.charAt(1))){
+            elem = list.substring(1, 2);
+        }else{ // elem is list
+            for(int i = 0; i < list.length(); i ++){
+                if(list.charAt(i) == '['){
+                    openedBrckets++;
+                }else if(list.charAt(i) == ']'){
+                    openedBrckets--;
+                }else if(list.charAt(i) == ',' && openedBrckets == 1){
+                    elem = list.substring(1, i);
                     break;
                 }
-                opened--;
             }
         }
-        return ret;
+        return elem;
     }
 
+    public boolean isList(String elem){
+        return (elem.charAt(0) == '[' && elem.charAt(elem.length()-1) == ']') ? true : false;
+    }
+
+    /*
+     * Removes first element of list and returns remainging list
+     */
+    public String updateList(String list, String elem){
+        if(elem.matches("\\[.*\\]")){
+            StringBuilder regex = new StringBuilder();
+            for(int i = 0; i < elem.length(); i++){
+                if(elem.charAt(i) == '[' || elem.charAt(i) == ']'){
+                    regex.append("\\");
+                }
+                regex.append(elem.charAt(i));
+            }
+            elem = regex.toString();
+        }
+        String updated = list.replaceFirst(elem, "");
+        if(updated.charAt(1) == ','){
+            return "[" + updated.substring(2);
+        }else{
+            return updated;
+        }
+        // int start = 1;
+        // int end = -1;
+
+        // for (int i = 0; i < list.length(); i++) {
+        //     if(list.charAt(i) == ','){
+        //         end = i;
+        //         break;
+        //     }
+        // }
+        // if(end > -1){
+        //     return "[" + list.substring(end+1);
+        // }else{
+        //     return "[]";
+        // }
+    }
+
+    /*
+     * Revices list that can contain sublists
+     */
+    public boolean validateList(String left, String right){
+
+        if(left.equals("[]") || right.equals("[]")){
+            return true;
+        }
+        
+        String currentLeft = getElem(left);
+        String currentRight = getElem(right);
+        String newLeft = null;
+        String newRight = null;
+        boolean twoDigits = (currentLeft.matches("\\d+") && currentRight.matches("\\d+")) ? true : false;
+        boolean twoLists = (isList(currentLeft) && isList(currentRight)) ? true: false;
+
+        if(twoDigits){
+            if(!validateDigit(currentLeft, currentRight)){ // Confirm left is smaller than right
+                return false;
+            }
+        }else if(twoLists){
+            if(!validate(currentLeft, currentRight)){
+                return false;
+            }
+        }else if(isList(currentLeft) && !isList(currentRight)){
+            String tempRight = "[" + currentRight + "]";
+            if(!validateList(currentLeft, tempRight)){
+                return false;
+            }
+        }else if(!isList(currentLeft) && isList(currentRight)){
+            String tempLeft = "[" + currentLeft + "]";
+            if(!validateList(tempLeft, currentRight)){
+                return false;
+            }
+        }
+        newLeft = updateList(left, currentLeft);
+        newRight = updateList(right, currentRight);
+
+        
+        return validateList(newLeft, newRight);
+    }
+
+    public boolean validateDigit(String left, String right){
+        boolean r = false;
+        if(Integer.parseInt(left) <= Integer.parseInt(right)){
+            r = true;
+        }
+        return r;
+    }
+    
+    public boolean validate(String left, String right){
+        int elemsLeft = noOfElements(left);
+        int elemsRight = noOfElements(right);
+        if(elemsLeft > elemsRight){
+            return false;
+        }
+        return validateList(left, right);
+    }
     public static void main(String[] args) throws Exception{
         Main m = new Main();
     }
